@@ -1,0 +1,6 @@
+torch==2.4.0
+datasets==3.6.0
+fsspec==2024.6.1
+matplotlib==3.7.1
+numpy==1.26.4
+transformers==4.36.2
