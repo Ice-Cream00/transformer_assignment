@@ -5,18 +5,20 @@
 ## 项目结构
 
 ```
-transformer_assignment/
-├── src/
-│   ├── model.py          # Transformer 模型实现
-│   ├── data.py           # 数据加载与处理
-│   └── train.py          # 训练脚本
-├── scripts/
-│   └── run.sh            # 运行脚本
-├── results/              # 结果目录（训练后自动生成）
-│   ├── model_*.pt        # 模型权重
-│   └── *_loss.png        # 训练曲线图
-├── requirements.txt      # 依赖包
-└── README.md            # 本文件
+transformer_assignment-main/
+├── src/                    # 源码目录（模型、数据、训练）
+│   ├── model.py
+│   ├── data.py
+│   └── train.py
+├── scripts/                # 运行脚本
+│   └── run.sh
+├── results/                # 结果目录（训练后自动生成）
+│   ├── *_loss_en.png       # 各实验损失曲线
+│   └── seq2seq_ablation_comparison_*.png  # 对比图
+│   └── train_xxx.log  # 训练日志
+├── train_8000_en2fr.csv    # 本地英法翻译数据集（8000对）
+├── requirements.txt        # 依赖包
+└── README.md               # 本文件
 ```
 
 ## 数据集
