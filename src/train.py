@@ -1,3 +1,35 @@
+import torch
+import torch.nn as nn
+import math
+import matplotlib.pyplot as plt
+import argparse
+from datasets import load_dataset
+from transformers import AutoTokenizer
+import os
+import numpy as np
+from data import load_local_csv
+from datasets import load_dataset
+import time
+from model import Seq2SeqTransformer, DecoderLayer, MultiHeadAttention, PositionWiseFFN, ResidualConnection
+import logging
+
+# Ensure results dir and logger ready
+results_dir = "results"
+os.makedirs(results_dir, exist_ok=True)
+log_file = f"{results_dir}/train_{time.strftime('%Y%m%d_%H%M%S')}.log"
+logger = logging.getLogger("transformer_train")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    fh = logging.FileHandler(log_file)
+    fh.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    fh.setFormatter(formatter)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(formatter)
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
 def train_seq2seq(args, model, get_batch, criterion, optimizer, scheduler, tokenizer):
     """训练seq2seq模型，返回损失记录"""
     os.makedirs("results", exist_ok=True)
@@ -49,16 +81,19 @@ def train_seq2seq(args, model, get_batch, criterion, optimizer, scheduler, token
         scheduler.step()
         
         print(f"【{args.ablation or '基线模型'}】Epoch {epoch+1}/{args.epochs} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}")
+        logger.info(f"[{args.ablation or 'baseline'}] Epoch {epoch+1}/{args.epochs} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}")
     
     # 保存单模型损失曲线
     plt.figure(figsize=(10, 5))
-    plt.plot(train_losses, label="训练损失")
-    plt.plot(val_losses, label="验证损失")
-    plt.xlabel("轮次")
-    plt.ylabel("损失值")
+    plt.plot(train_losses, label="Train Loss")
+    plt.plot(val_losses, label="Validation Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
     plt.legend()
-    plt.title(f"{args.ablation or '基线模型'}训练曲线（英法翻译）")
-    plt.savefig(f"results/{args.ablation or 'baseline'}_loss.png")
+    plt.title(f"{args.ablation or 'baseline'} Training Curve (EN-FR Translation)")
+    out_path = f"results/{args.ablation or 'baseline'}_loss_en.png"
+    plt.savefig(out_path)
+    logger.info(f"Saved loss curve: {out_path}")
     plt.close()
     
     return train_losses, val_losses, torch.exp(torch.tensor(val_losses[-1])).item()  # 返回损失和困惑度
@@ -82,7 +117,7 @@ def run_seq2seq_experiment(ablation_type=None):
     torch.cuda.manual_seed(args.seed)
     
     # 加载数据
-    get_batch, src_vocab_size, tgt_vocab_size, tokenizer, pad_idx, bos_idx, eos_idx = load_iwslt2017(args.max_seq_len)
+    get_batch, src_vocab_size, tgt_vocab_size, tokenizer, pad_idx, bos_idx, eos_idx = load_local_csv(args.max_seq_len)
     args.src_vocab_size = src_vocab_size
     args.tgt_vocab_size = tgt_vocab_size
     
@@ -116,12 +151,18 @@ def run_seq2seq_experiment(ablation_type=None):
         model.encoder.pos_encoding = DummyPositionalEncoding()
         model.decoder.pos_encoding = DummyPositionalEncoding()
     elif args.ablation == "no_cross_attn":
-        # 移除编码器-解码器注意力
-        class DummyDecoderLayer(DecoderLayer):
+        # Remove encoder-decoder cross attention
+        class DummyDecoderLayer(nn.Module):
+            def __init__(self, d_model, num_heads, ffn_hidden_dim, dropout=0.1):
+                super().__init__()
+                self.self_attn = MultiHeadAttention(d_model, num_heads, dropout)
+                self.ffn = PositionWiseFFN(d_model, ffn_hidden_dim, dropout)
+                self.residual1 = ResidualConnection(d_model, dropout)
+                self.residual3 = ResidualConnection(d_model, dropout)
             def forward(self, x, enc_out, tgt_mask, src_mask):
                 self_attn_output = self.self_attn(x, x, x, tgt_mask)
                 x = self.residual1(x, self_attn_output)
-                # 跳过交叉注意力
+                # skip cross attention
                 ffn_output = self.ffn(x)
                 x = self.residual3(x, ffn_output)
                 return x
@@ -135,8 +176,9 @@ def run_seq2seq_experiment(ablation_type=None):
             bos_idx=bos_idx,
             eos_idx=eos_idx
         ).to(args.device)
+        # 替换 decoder 层为 DummyDecoderLayer
         model.decoder.layers = nn.ModuleList([
-            DummyDecoderLayer(args.d_model, args.num_heads, 512)
+            DummyDecoderLayer(args.d_model, args.num_heads, 512, dropout=0.1).to(args.device)
             for _ in range(args.num_layers)
         ])
     else:
@@ -171,33 +213,43 @@ if __name__ == "__main__":
     results = {}
     for name, ablation in experiments.items():
         print(f"\n===== 开始{name}实验（英法翻译） =====")
-        train_loss, val_loss, ppl = run_seq2seq_experiment(ablation)
-        results[name] = {
-            "train_loss": train_loss,
-            "val_loss": val_loss,
-            "perplexity": ppl
-        }
+        logger.info(f"Start experiment: {name}")
+        try:
+            train_loss, val_loss, ppl = run_seq2seq_experiment(ablation)
+            results[name] = {
+                "train_loss": train_loss,
+                "val_loss": val_loss,
+                "perplexity": ppl
+            }
+        except Exception as e:
+            logger.error(f"Experiment {name} failed: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            print(f"Experiment {name} failed: {e}")
     
     # 打印结果汇总
-    print("\n===== 消融实验结果汇总（英法翻译） =====")
-    print(f"| 实验配置 | 最终验证损失 | 困惑度 |")
-    print(f"|----------|--------------|--------|")
+    logger.info("===== Ablation experiment summary (EN-FR) =====")
+    logger.info("| Experiment | Final Val Loss | Perplexity |")
+    logger.info("|------------|----------------|------------|")
     for name in experiments.keys():
         loss = results[name]["val_loss"][-1]
         ppl = results[name]["perplexity"]
-        print(f"| {name.ljust(8)} | {loss:.4f}       | {ppl:.2f} |")
+        logger.info(f"| {name.ljust(8)} | {loss:.4f}       | {ppl:.2f} |")
     
-    # 绘制验证损失对比曲线
+    # Plot validation loss comparison (English)
     plt.figure(figsize=(12, 6))
     for name in experiments.keys():
-        plt.plot(
-            results[name]["val_loss"],
-            label=f"{name} (困惑度: {results[name]['perplexity']:.2f})"
-        )
-    plt.xlabel("训练轮次")
-    plt.ylabel("验证损失")
-    plt.title("seq2seq消融实验验证损失对比（英法翻译）")
+        if name in results:
+            plt.plot(
+                results[name]["val_loss"],
+                label=f"{name} (Perplexity: {results[name]['perplexity']:.2f})"
+            )
+    plt.xlabel("Epoch")
+    plt.ylabel("Validation Loss")
+    plt.title("Seq2Seq Ablation Experiment Validation Loss Comparison (EN-FR Translation)")
     plt.legend()
     plt.grid(alpha=0.3)
-    plt.savefig("results/seq2seq_ablation_comparison.png")
+    comp_path = f"results/seq2seq_ablation_comparison_{time.strftime('%Y%m%d_%H%M%S')}_en.png"
+    plt.savefig(comp_path)
+    logger.info(f"Saved comparison plot: {comp_path}")
     plt.show()

@@ -1,0 +1,56 @@
+2026-01-13 23:03:42,174 - INFO - Start experiment: baseline
+2026-01-13 23:03:51,314 - INFO - [baseline] Epoch 1/10 | Train Loss: 5.9954 | Val Loss: 5.1791
+2026-01-13 23:03:57,427 - INFO - [baseline] Epoch 2/10 | Train Loss: 4.8109 | Val Loss: 4.8096
+2026-01-13 23:04:03,548 - INFO - [baseline] Epoch 3/10 | Train Loss: 4.4365 | Val Loss: 4.6096
+2026-01-13 23:04:09,665 - INFO - [baseline] Epoch 4/10 | Train Loss: 4.2076 | Val Loss: 4.4673
+2026-01-13 23:04:16,148 - INFO - [baseline] Epoch 5/10 | Train Loss: 4.0540 | Val Loss: 4.3810
+2026-01-13 23:04:22,001 - INFO - [baseline] Epoch 6/10 | Train Loss: 3.9145 | Val Loss: 4.3575
+2026-01-13 23:04:28,256 - INFO - [baseline] Epoch 7/10 | Train Loss: 3.8398 | Val Loss: 4.2803
+2026-01-13 23:04:34,444 - INFO - [baseline] Epoch 8/10 | Train Loss: 3.7638 | Val Loss: 4.2895
+2026-01-13 23:04:40,694 - INFO - [baseline] Epoch 9/10 | Train Loss: 3.7327 | Val Loss: 4.2141
+2026-01-13 23:04:46,855 - INFO - [baseline] Epoch 10/10 | Train Loss: 3.7216 | Val Loss: 4.2665
+2026-01-13 23:04:47,003 - INFO - Saved loss curve: results/baseline_loss_en.png
+2026-01-13 23:04:47,087 - INFO - Start experiment: single_head
+2026-01-13 23:04:53,548 - INFO - [single_head] Epoch 1/10 | Train Loss: 6.0013 | Val Loss: 5.1829
+2026-01-13 23:04:59,540 - INFO - [single_head] Epoch 2/10 | Train Loss: 4.8269 | Val Loss: 4.8281
+2026-01-13 23:05:05,615 - INFO - [single_head] Epoch 3/10 | Train Loss: 4.4678 | Val Loss: 4.6266
+2026-01-13 23:05:11,294 - INFO - [single_head] Epoch 4/10 | Train Loss: 4.2459 | Val Loss: 4.4917
+2026-01-13 23:05:17,311 - INFO - [single_head] Epoch 5/10 | Train Loss: 4.0974 | Val Loss: 4.4021
+2026-01-13 23:05:23,304 - INFO - [single_head] Epoch 6/10 | Train Loss: 3.9618 | Val Loss: 4.3830
+2026-01-13 23:05:29,414 - INFO - [single_head] Epoch 7/10 | Train Loss: 3.8894 | Val Loss: 4.3083
+2026-01-13 23:05:35,170 - INFO - [single_head] Epoch 8/10 | Train Loss: 3.8151 | Val Loss: 4.3127
+2026-01-13 23:05:41,290 - INFO - [single_head] Epoch 9/10 | Train Loss: 3.7840 | Val Loss: 4.2399
+2026-01-13 23:05:47,036 - INFO - [single_head] Epoch 10/10 | Train Loss: 3.7738 | Val Loss: 4.2885
+2026-01-13 23:05:47,177 - INFO - Saved loss curve: results/single_head_loss_en.png
+2026-01-13 23:05:47,244 - INFO - Start experiment: no_pos_enc
+2026-01-13 23:05:54,258 - INFO - [no_pos_enc] Epoch 1/10 | Train Loss: 5.9591 | Val Loss: 5.1412
+2026-01-13 23:06:00,337 - INFO - [no_pos_enc] Epoch 2/10 | Train Loss: 4.7383 | Val Loss: 4.7766
+2026-01-13 23:06:06,688 - INFO - [no_pos_enc] Epoch 3/10 | Train Loss: 4.3502 | Val Loss: 4.5697
+2026-01-13 23:06:12,633 - INFO - [no_pos_enc] Epoch 4/10 | Train Loss: 4.1068 | Val Loss: 4.4328
+2026-01-13 23:06:18,796 - INFO - [no_pos_enc] Epoch 5/10 | Train Loss: 3.9419 | Val Loss: 4.3441
+2026-01-13 23:06:24,917 - INFO - [no_pos_enc] Epoch 6/10 | Train Loss: 3.7984 | Val Loss: 4.3367
+2026-01-13 23:06:31,159 - INFO - [no_pos_enc] Epoch 7/10 | Train Loss: 3.7071 | Val Loss: 4.2538
+2026-01-13 23:06:37,007 - INFO - [no_pos_enc] Epoch 8/10 | Train Loss: 3.6207 | Val Loss: 4.2675
+2026-01-13 23:06:43,177 - INFO - [no_pos_enc] Epoch 9/10 | Train Loss: 3.5863 | Val Loss: 4.1963
+2026-01-13 23:06:49,156 - INFO - [no_pos_enc] Epoch 10/10 | Train Loss: 3.5674 | Val Loss: 4.2440
+2026-01-13 23:06:49,271 - INFO - Saved loss curve: results/no_pos_enc_loss_en.png
+2026-01-13 23:06:49,298 - INFO - Start experiment: no_cross_attn
+2026-01-13 23:06:53,740 - INFO - [no_cross_attn] Epoch 1/10 | Train Loss: 6.0086 | Val Loss: 5.2139
+2026-01-13 23:06:57,232 - INFO - [no_cross_attn] Epoch 2/10 | Train Loss: 4.8193 | Val Loss: 4.8713
+2026-01-13 23:07:00,317 - INFO - [no_cross_attn] Epoch 3/10 | Train Loss: 4.4716 | Val Loss: 4.6702
+2026-01-13 23:07:03,962 - INFO - [no_cross_attn] Epoch 4/10 | Train Loss: 4.2850 | Val Loss: 4.5498
+2026-01-13 23:07:07,590 - INFO - [no_cross_attn] Epoch 5/10 | Train Loss: 4.1490 | Val Loss: 4.5033
+2026-01-13 23:07:11,144 - INFO - [no_cross_attn] Epoch 6/10 | Train Loss: 4.0539 | Val Loss: 4.4502
+2026-01-13 23:07:14,706 - INFO - [no_cross_attn] Epoch 7/10 | Train Loss: 3.9881 | Val Loss: 4.4215
+2026-01-13 23:07:18,228 - INFO - [no_cross_attn] Epoch 8/10 | Train Loss: 3.9031 | Val Loss: 4.4458
+2026-01-13 23:07:21,761 - INFO - [no_cross_attn] Epoch 9/10 | Train Loss: 3.9033 | Val Loss: 4.3991
+2026-01-13 23:07:25,287 - INFO - [no_cross_attn] Epoch 10/10 | Train Loss: 3.8839 | Val Loss: 4.3760
+2026-01-13 23:07:25,401 - INFO - Saved loss curve: results/no_cross_attn_loss_en.png
+2026-01-13 23:07:25,424 - INFO - ===== Ablation experiment summary (EN-FR) =====
+2026-01-13 23:07:25,425 - INFO - | Experiment | Final Val Loss | Perplexity |
+2026-01-13 23:07:25,425 - INFO - |------------|----------------|------------|
+2026-01-13 23:07:25,425 - INFO - | baseline | 4.2665       | 71.27 |
+2026-01-13 23:07:25,425 - INFO - | single_head | 4.2885       | 72.85 |
+2026-01-13 23:07:25,425 - INFO - | no_pos_enc | 4.2440       | 69.68 |
+2026-01-13 23:07:25,425 - INFO - | no_cross_attn | 4.3760       | 79.52 |
+2026-01-13 23:07:25,554 - INFO - Saved comparison plot: results/seq2seq_ablation_comparison_20260113_230725_en.png

@@ -7,9 +7,7 @@ from datasets import load_dataset
 from transformers import AutoTokenizer
 import os
 import numpy as np
-
-# 确保中文显示
-plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
+from datasets import load_dataset
 
 # 1. 位置编码
 class PositionalEncoding(nn.Module):
